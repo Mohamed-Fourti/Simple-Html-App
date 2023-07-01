@@ -1,0 +1,1 @@
+Simple static page to test pushing docker image to docker hun using jenkins
