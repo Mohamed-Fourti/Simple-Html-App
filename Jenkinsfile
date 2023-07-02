@@ -9,9 +9,8 @@ node {
 
     stage('Build image') {
   
-       app = docker.build("mohamedfourti/simple-app")
+       app = docker.build("mohamedfourti/simple-app:latest")
     }
-
 
     stage('Push image') {
         
