@@ -14,11 +14,12 @@ node {
             app.push("${env.BUILD_NUMBER}")
         }
     }
+
     stage('Get JWT Token') {
-        script {
-            withCredentials([usernamePassword(credentialsId: 'Portainer', usernameVariable: 'PORTAINER_USERNAME', passwordVariable: 'PORTAINER_PASSWORD')]) {
+        withCredentials([usernamePassword(credentialsId: 'Portainer', usernameVariable: 'PORTAINER_USERNAME', passwordVariable: 'PORTAINER_PASSWORD')]) {
+            script {
                 def json = """
-                    {"Username": "$PORTAINER_USERNAME", "Password": "$PORTAINER_PASSWORD"}
+                    {"Username": "${PORTAINER_USERNAME}", "Password": "${PORTAINER_PASSWORD}"}
                 """
                 def jwtResponse = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, requestBody: json, url: "https://3.86.89.116:9443/api/auth"
                 def jwtObject = new groovy.json.JsonSlurper().parseText(jwtResponse.getContent())
@@ -26,5 +27,5 @@ node {
             }
         }
         echo "${env.JWTTOKEN}"
-    }  
+    }
 }
