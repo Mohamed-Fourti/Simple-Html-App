@@ -32,19 +32,19 @@ node {
     stage('Build image in Portainer') {
         withCredentials([usernamePassword(credentialsId: 'Portainer', usernameVariable: 'PORTAINER_USERNAME', passwordVariable: 'PORTAINER_PASSWORD')]) {
             script {
-                def json = """
-                    {
-                        "imageName": "mohamedfourti/simple-app:latest",
-                        "tag": "latest",
-                        "repositoryURL": "https://github.com/mohamedfourti/simple-app.git",
-                        "dockerfilePath": "Dockerfile"
-                    }
+                sh """
+                    curl -X POST \\
+                        -H "Authorization: ${env.JWTTOKEN}" \\
+                        -H "Content-Type: application/json" \\
+                        -H "Accept: application/json" \\
+                        -d '{
+                            "imageName": "mohamedfourti/simple-app:latest",
+                            "tag": "latest",
+                            "repositoryURL": "https://github.com/mohamedfourti/simple-app.git",
+                            "dockerfilePath": "Dockerfile"
+                        }' \\
+                        https://3.82.191.4:9443/api/endpoints/1/docker/build
                 """
-                def buildResponse = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, requestBody: json, httpHeader: [
-                    Authorization: "${env.JWTTOKEN}"
-                ], url: "https://3.82.191.4:9443/api/endpoints/1/docker/build"
-                echo "Build response: ${buildResponse.status}"
-                echo "Build output: ${buildResponse.content}"
             }
         }
     }
