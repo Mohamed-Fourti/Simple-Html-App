@@ -28,16 +28,31 @@ node {
         }
         echo "${env.JWTTOKEN}"
     }
-    stage('Build Docker Image on Portainer') { 
-        script {
-          // Build the image
-          withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-              def repoURL = """
-                https://3.82.191.4:9443/api/endpoints/1/docker/containers/create?name=test:latest&remote=https://github.com/Mohamed-Fourti/Simple-Html-App.git
-              """
-              def imageResponse = httpRequest httpMode: 'POST', ignoreSslErrors: true, url: repoURL, validResponseCodes: '200', customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], [name: "cache-control", value: "no-cache"]]
-          }
+    
+    stage('Build container in Portainer') {
+        withEnv(['JWTTOKEN=${env.JWTTOKEN}']) {
+            script {
+                def gitRepo = 'https://github.com/Mohamed-Fourti/Simple-Html-App.git'
+                def dockerfilePath = 'path/to/your/Dockerfile'
+                def imageName = 'latest'
+                def endpointURL = 'https://3.82.191.4:9443/api/endpoints/1/docker/build'
+
+                
+                def payload = [
+                    'dockerfile': 'github.com/Mohamed-Fourti/Simple-Html-App.git',
+                    'path': 'Dockerfile',
+                    't': 'latest'
+                ]
+
+                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
+                
+                // Check response status and handle accordingly
+                if (response.status == 200) {
+                    echo "Container build successful in Portainer"
+                } else {
+                    error "Failed to build container in Portainer. Status code: ${response.status}"
+                }
+            }
         }
-      
     }
 }
