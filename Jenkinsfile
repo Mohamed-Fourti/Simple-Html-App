@@ -1,4 +1,4 @@
-node {
+ode {
     def app
 
     stage('Clone repository') {
@@ -34,7 +34,7 @@ node {
             // Build the image
             withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
                 def repoURL = """
-                    https://3.82.191.4:9443/api/endpoints/1/docker/build?t=test:latest&remote=https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/$GITHUB_USERNAME/Simple-Html-App.git&dockerfile=Dockerfile&nocache=true
+                    https://3.82.191.4:9443/api/endpoints/1/docker/build?t=test:latest&remote=https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/${GITHUB_USERNAME}/Simple-Html-App.git&dockerfile=Dockerfile&nocache=true
                 """
                 def imageResponse = httpRequest httpMode: 'POST', ignoreSslErrors: true, url: repoURL, validResponseCodes: '200', customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], [name: "cache-control", value: "no-cache"]]
             }
