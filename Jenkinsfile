@@ -39,13 +39,13 @@ node {
 
                 def headers = [
                     'Content-Type': 'application/json',
-                    'Authorization': "${JWTTOKEN}"
+                    'Authorization': "${env.JWTTOKEN}"
                 ]
                 
                 def payload = [
-                    'dockerfile': 'github.com/Mohamed-Fourti/Simple-Html-App.git',
-                    'path': 'Dockerfile',
-                    't': 'latest'
+                    'dockerfile': gitRepo,
+                    'path': dockerfilePath,
+                    't': imageName
                 ]
 
                 def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers: headers, requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
