@@ -32,9 +32,9 @@ node {
     stage('Build container in Portainer') {
         withEnv(['JWTTOKEN=${env.JWTTOKEN}']) {
             script {
-                def gitRepo = 'https://github.com/your-username/your-repo.git'
+                def gitRepo = 'https://github.com/Mohamed-Fourti/Simple-Html-App.git'
                 def dockerfilePath = 'path/to/your/Dockerfile'
-                def imageName = 'your-image-name'
+                def imageName = 'latest'
                 def endpointURL = 'https://3.82.191.4:9443/api/endpoints/1/docker/build'
 
                 def headers = [
@@ -43,20 +43,9 @@ node {
                 ]
                 
                 def payload = [
-                    'dockerfile': github.com/Mohamed-Fourti/Simple-Html-App,
-                    'path': Dockerfile,
-                    't': latest
+                    'dockerfile': 'github.com/Mohamed-Fourti/Simple-Html-App.git',
+                    'path': 'Dockerfile',
+                    't': 'latest'
                 ]
 
-                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers: headers, requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
-                
-                // Check response status and handle accordingly
-                if (response.status == 200) {
-                    echo "Container build successful in Portainer"
-                } else {
-                    error "Failed to build container in Portainer. Status code: ${response.status}"
-                }
-            }
-        }
-    }
-}
+                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers
