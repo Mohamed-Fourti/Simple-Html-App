@@ -44,7 +44,7 @@ node {
                     't': 'latest'
                 ]
 
-                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
+                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], [name: "cache-control", value: "no-cache"]], value: env.JWTTOKEN ], requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
                 
                 // Check response status and handle accordingly
                 if (response.status == 200) {
