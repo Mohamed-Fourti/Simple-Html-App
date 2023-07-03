@@ -30,7 +30,7 @@ node {
     }
 
     stage('Build Docker Image on Portainer') {
-        steps {
+        
             withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
                 def portainerEndpoint = 'https://3.82.191.4:9443'
                 def portainerAPI = "${portainerEndpoint}/api/endpoints/1/docker/build"
@@ -60,7 +60,7 @@ node {
     
                 echo "Response status: ${imageResponse.status}"
                 echo "Response body: ${imageResponse.content}"
-            }
+            
         }
     }
 }
