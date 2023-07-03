@@ -29,22 +29,33 @@ node {
         echo "${env.JWTTOKEN}"
     }
     
-    stage('Build image in Portainer') {
-        withCredentials([usernamePassword(credentialsId: 'Portainer', usernameVariable: 'PORTAINER_USERNAME', passwordVariable: 'PORTAINER_PASSWORD')]) {
+    stage('Build container in Portainer') {
+        withEnv(['JWTTOKEN=${env.JWTTOKEN}']) {
             script {
-                sh """
-                    curl -X POST \\
-                        -H "Authorization: ${env.JWTTOKEN}" \\
-                        -H "Content-Type: application/json" \\
-                        -H "Accept: application/json" \\
-                        -d '{
-                            "imageName": "mohamedfourti/simple-app:latest",
-                            "tag": "latest",
-                            "repositoryURL": "https://github.com/mohamedfourti/simple-app.git",
-                            "dockerfilePath": "Dockerfile"
-                        }' \\
-                        https://3.82.191.4:9443/api/endpoints/1/docker/build
-                """
+                def gitRepo = 'https://github.com/your-username/your-repo.git'
+                def dockerfilePath = 'path/to/your/Dockerfile'
+                def imageName = 'your-image-name'
+                def endpointURL = 'https://3.82.191.4:9443/api/endpoints/1/docker/build'
+
+                def headers = [
+                    'Content-Type': 'application/json',
+                    'Authorization': "${JWTTOKEN}"
+                ]
+                
+                def payload = [
+                    'dockerfile': github.com/Mohamed-Fourti/Simple-Html-App,
+                    'path': Dockerfile,
+                    't': latest
+                ]
+
+                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers: headers, requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
+                
+                // Check response status and handle accordingly
+                if (response.status == 200) {
+                    echo "Container build successful in Portainer"
+                } else {
+                    error "Failed to build container in Portainer. Status code: ${response.status}"
+                }
             }
         }
     }
