@@ -28,38 +28,7 @@ node {
         }
         echo "${env.JWTTOKEN}"
     }
-    
-    stage('Build container in Portainer') {
-        withEnv(["Authorization=${env.JWTTOKEN}"]) {
-            script {
-                def gitRepo = 'https://github.com/Mohamed-Fourti/Simple-Html-App.git'
-                def dockerfilePath = 'path/to/your/Dockerfile'
-                def imageName = 'latest'
-                def endpointURL = 'https://3.82.191.4:9443/api/endpoints/1/docker/build'
-
-                def headers = [
-                    'Content-Type': 'application/json',
-                    'Authorization': "${Authorization}"
-                ]
-                
-                def payload = [
-                    'dockerfile': gitRepo,
-                    'path': dockerfilePath,
-                    't': imageName
-                ]
-
-                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers: headers, requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
-                
-                // Check response status and handle accordingly
-                if (response.status == 200) {
-                    echo "Container build successful in Portainer"
-                } else {
-                    error "Failed to build container in Portainer. Status code: ${response.status}"
-                }
-            }
-        }
-    }
-        stage('Build Docker Image on Portainer') { 
+    stage('Build Docker Image on Portainer') { 
         script {
           // Build the image
           withCredentials([usernamePassword(credentialsId: 'Github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
