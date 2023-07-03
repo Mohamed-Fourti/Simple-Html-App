@@ -31,39 +31,38 @@ node {
 
     stage('Build Docker Image on Portainer') {
         steps {
-            script {
-                withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                    def portainerEndpoint = 'https://3.82.191.4:9443'
-                    def portainerAPI = "${portainerEndpoint}/api/endpoints/1/docker/build"
-                    def repoURL = "https://github.com/${GITHUB_USERNAME}/Simple-Html-App"
-                    def dockerfilePath = "Dockerfile"
+            withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                def portainerEndpoint = 'https://3.82.191.4:9443'
+                def portainerAPI = "${portainerEndpoint}/api/endpoints/1/docker/build"
+                def repoURL = "https://github.com/${GITHUB_USERNAME}/Simple-Html-App"
+                def dockerfilePath = "Dockerfile"
     
-                    def buildParams = [
-                        't': 'test:latest',
-                        'remote': repoURL,
-                        'dockerfile': dockerfilePath,
-                        'nocache': true
-                    ]
+                def buildParams = [
+                    't': 'test:latest',
+                    'remote': repoURL,
+                    'dockerfile': dockerfilePath,
+                    'nocache': true
+                ]
     
-                    def headers = [
-                        'Authorization': env.JWTTOKEN,
-                        'cache-control': 'no-cache'
-                    ]
+                def headers = [
+                    'Authorization': env.JWTTOKEN,
+                    'cache-control': 'no-cache'
+                ]
     
-                    def imageResponse = httpRequest(
-                        httpMode: 'POST',
-                        ignoreSslErrors: true,
-                        url: portainerAPI,
-                        contentType: 'APPLICATION_FORM',
-                        requestBody: buildParams,
-                        headers: headers
-                    )
+                def imageResponse = httpRequest(
+                    httpMode: 'POST',
+                    ignoreSslErrors: true,
+                    url: portainerAPI,
+                    contentType: 'APPLICATION_FORM',
+                    requestBody: buildParams,
+                    headers: headers
+                )
     
-                    echo "Response status: ${imageResponse.status}"
-                    echo "Response body: ${imageResponse.content}"
-                }
+                echo "Response status: ${imageResponse.status}"
+                echo "Response body: ${imageResponse.content}"
             }
         }
     }
+
 
 }
