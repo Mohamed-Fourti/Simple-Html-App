@@ -30,14 +30,40 @@ node {
     }
 
     stage('Build Docker Image on Portainer') {
-        script {
-            // Build the image
-            withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                def repoURL = """
-                    https://3.82.191.4:9443/api/endpoints/1/docker/build?t=test:latest&remote=https://github.com/${GITHUB_USERNAME}/Simple-Html-App&dockerfile=Dockerfile&nocache=true
-                """
-                def imageResponse = httpRequest httpMode: 'POST', ignoreSslErrors: true, url: repoURL, validResponseCodes: '200', customHeaders:[[name:"Authorization", value: env.JWTTOKEN ], [name: "cache-control", value: "no-cache"]]
+        steps {
+            script {
+                withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                    def portainerEndpoint = 'https://3.82.191.4:9443'
+                    def portainerAPI = "${portainerEndpoint}/api/endpoints/1/docker/build"
+                    def repoURL = "https://github.com/${GITHUB_USERNAME}/Simple-Html-App"
+                    def dockerfilePath = "Dockerfile"
+    
+                    def buildParams = [
+                        't': 'test:latest',
+                        'remote': repoURL,
+                        'dockerfile': dockerfilePath,
+                        'nocache': true
+                    ]
+    
+                    def headers = [
+                        'Authorization': env.JWTTOKEN,
+                        'cache-control': 'no-cache'
+                    ]
+    
+                    def imageResponse = httpRequest(
+                        httpMode: 'POST',
+                        ignoreSslErrors: true,
+                        url: portainerAPI,
+                        contentType: 'APPLICATION_FORM',
+                        requestBody: buildParams,
+                        headers: headers
+                    )
+    
+                    echo "Response status: ${imageResponse.status}"
+                    echo "Response body: ${imageResponse.content}"
+                }
             }
         }
     }
+
 }
