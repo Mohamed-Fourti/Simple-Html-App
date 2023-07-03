@@ -48,4 +48,15 @@ node {
                     't': 'latest'
                 ]
 
-                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers
+                def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON', validResponseCodes: '200', httpMode: 'POST', ignoreSslErrors: true, consoleLogResponseBody: true, headers: headers, requestBody: groovy.json.JsonOutput.toJson(payload), url: endpointURL
+                
+                // Check response status and handle accordingly
+                if (response.status == 200) {
+                    echo "Container build successful in Portainer"
+                } else {
+                    error "Failed to build container in Portainer. Status code: ${response.status}"
+                }
+            }
+        }
+    }
+}
