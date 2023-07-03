@@ -31,7 +31,7 @@ node {
     stage('Build Docker Image on Portainer') { 
         script {
           // Build the image
-          withCredentials([usernamePassword(credentialsId: 'Github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+          withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
               def repoURL = """
                 https://3.82.191.4:9443/api/endpoints/1/docker/build?t=test:latest&remote=https://github.com/Mohamed-Fourti/Simple-Html-App.git&dockerfile=Dockerfile&nocache=true
               """
