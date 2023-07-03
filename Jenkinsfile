@@ -30,7 +30,7 @@ node {
     }
     
     stage('Build container in Portainer') {
-        withEnv(['JWTTOKEN=${env.JWTTOKEN}']) {
+        withEnv(["Authorization=${env.JWTTOKEN}"]) {
             script {
                 def gitRepo = 'https://github.com/Mohamed-Fourti/Simple-Html-App.git'
                 def dockerfilePath = 'path/to/your/Dockerfile'
@@ -39,7 +39,7 @@ node {
 
                 def headers = [
                     'Content-Type': 'application/json',
-                    'Authorization': "${env.JWTTOKEN}"
+                    'Authorization': "${Authorization}"
                 ]
                 
                 def payload = [
